@@ -110,7 +110,7 @@ module Valkyrie
 						push_var node.name
 						return Var.new(node.name).at node
 					end
-				when ListLiteral
+				when VectorLiteral
 					node.items=node.items.map{|i| to_pattern(i).as Node}
 				when MapLiteral
 					node.entries=node.entries.map{|e| MapLiteral::Entry.new e.key,to_pattern(e.value).as Node}

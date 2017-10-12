@@ -35,7 +35,7 @@ module Valkyrie
 
 		def parse_list_literal
 			init=expect Token::Type::LBrace
-			list=ListLiteral.new.at init.loc
+			list=VectorLiteral.new.at init.loc
 
 			skip_ws_newline
 			if finish=accept Token::Type::RBrace

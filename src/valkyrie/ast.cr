@@ -149,7 +149,7 @@ module Valkyrie
 	end
 
 	# [ (expr | range)... ]
-	class ListLiteral < Literal
+	class VectorLiteral < Literal
 		property items : Array(Node)
 
 		def initialize(@items=[] of Node);end
