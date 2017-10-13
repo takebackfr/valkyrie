@@ -52,8 +52,20 @@ module Valkyrie
 				end
 			end
 
-			skip_ws
-			expect Token::Type::LBrack
+			skip_ws_newline
+			if accept Token::Type::Colon
+				skip_ws_newline
+				loop do
+					fn_def.returns<<expect Token::Type::Const
+
+					skip_ws
+					if accept Token::Type::Pipe
+						skip_ws
+					else
+						break
+					end
+				end
+			end
 			skip_ws_newline
 			if finish=accept Token::Type::RBrack
 				fn_def.body=NoOp.new

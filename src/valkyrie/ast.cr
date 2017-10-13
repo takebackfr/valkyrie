@@ -451,10 +451,11 @@ module Valkyrie
 		property args : Array(Arg)
 		property! splat_index : Int32?
 		property body : Node
+		property returns : Array(Node)
 
-		def initialize(@name=nil,@args=[] of Arg,@body=NoOp.new,@splat_index=nil);end
+		def initialize(@name=nil,@args=[] of Arg,@body=NoOp.new,@splat_index=nil,@returns=[] of Node);end
 
-		def_equals_and_hash name,args,splat_index?,body
+		def_equals_and_hash name,args,splat_index?,body,returns
 	end
 
 	# type Const data
