@@ -195,7 +195,7 @@ module Valkyrie
 		end
 
 		def inspect(io : IO)
-			io<<"#{@type}:#{raw}"
+			io<<"#{@type}:#{raw.dump}"
 		end
 	end
 end

@@ -6,19 +6,20 @@ module Valkyrie
 		property target_char : Char	# current character
 		property target : Token		# token being parsed
 		property tokens : Array(Token)	# list of parsed tokens
+		property reader : Reader	# reader
+		property wd : String		# working directory
 
-		@reader : Reader	# reader
+		property line : Int32
+		property col : Int32
+
 		@buff : IO::Memory	# buffer
-		@wd : String		# working directory
-
-		@line : Int32		# line number
-		@col : Int32		# column position
+		@source : String?
 
 		# initializer method
 		# @source -- source file name
-		def initialize(data : IO,@source : String?=nil,wd : String?=nil)
+		def initialize(data : IO,@source=nil,wd : String?=nil)
 			@reader=Reader.new data
-			@wd=wd||(@source ? File.dirname(source) : %x(pwd))
+			@wd=wd||(@source ? File.dirname(source||"") : %x(pwd))
 
 			@line=1
 			@col=0
@@ -26,8 +27,7 @@ module Valkyrie
 			@buff=IO::Memory.new
 			@tokens=[] of Token
 
-			@target_char='\0'
-			read_char
+			@target_char=' '
 		end
 
 		macro set_type(type)
@@ -82,6 +82,10 @@ module Valkyrie
 			@target.loc.col=@col
 		end
 
+		def target_char : Char
+			@reader.target
+		end
+
 		# location of the target token
 		def location : Location
 			@target.loc
@@ -96,7 +100,7 @@ module Valkyrie
 			@col+=1
 			@target.loc.length+=1
 
-			@target_char=@reader.read_char
+			@reader.read_char
 		end
 
 		# peek (read, don't consume) at the reader's content
