@@ -272,6 +272,27 @@ module Valkyrie
 		def_equals_and_hash condition,body,alt
 	end
 
+	# try { body } rescue [ex : Type] { body }
+	# try { body } rescue [ex : Type] { body } ensure { body }
+	class Try < Node
+		property ensure_block : Node?
+
+		def initialize(@body=NoOp.new,@rescue_block=NoOp.new,@ensure_block=nil);end
+
+		def_nodes body,rescue_block
+		def_equals_and_hash body,rescue_block,ensure_block
+	end
+
+	class Rescue < Node
+		property name : String?
+		property ex : Node?
+
+		def initialize(@body=NoOp.new,@name=nil,@ex=nil);end
+
+		def_nodes body
+		def_equals_and_hash body,name,ex
+	end
+
 	# while condition{body}
 	# expr while condition
 	# while condition do expr
@@ -511,23 +532,6 @@ module Valkyrie
 	end
 
 	class Yield < Control
-		def_equals_and_hash
-	end
-
-	class Try < Control
-		def_equals_and_hash
-	end
-
-	class Rescue < Control
-		property name : String
-		property ex : Node?
-
-		def initialize(@name,@ex=nil);end
-
-		def_equals_and_hash name,ex
-	end
-
-	class Ensure < Control
 		def_equals_and_hash
 	end
 end

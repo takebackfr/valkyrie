@@ -102,6 +102,8 @@ module Valkyrie
 			RBrace		# ]
 
 			Comma		# ,
+			Elipses		# ...
+			ElipsesIv	# ..
 			Dot			# \.
 			Colon		# :
 			Semi		# ;

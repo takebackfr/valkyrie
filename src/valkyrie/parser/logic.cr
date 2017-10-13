@@ -107,7 +107,50 @@ module Valkyrie
 		end
 
 		def parse_ex_handle
-			# TODO: implement exception handling
+			init=expect Token::Type::Try
+			want_type=false
+			try_op=Try.new.at init.loc
+
+			skip_ws_newline
+			expect Token::Type::LBrack
+			skip_ws_newline
+			try_op.body=parse_block
+			expect Token::Type::RBrack
+
+			skip_ws_newline
+			r_init=expect Token::Type::Rescue
+			rescue_op=Rescue.new.at r_init.loc
+
+			skip_ws
+			if var=accept Token::Type::Ident
+				skip_ws
+				rescue_op.name=var.value
+				if accept Token::Type::Colon
+					skip_ws
+					want_type=true
+				end
+			end
+
+			if const=accept Token::Type::Const
+				rescue_op.ex=parse_primary
+			elsif want_type
+				raise SyntaxError.new target.loc,"Expected type restriction"
+			end
+
+			skip_ws_newline
+			expect Token::Type::LBrack
+			rescue_op.body=parse_block
+			expect Token::Type::RBrack
+			try_op.rescue_block=rescue_op
+
+			skip_ws_newline
+			if accept Token::Type::Ensure
+				skip_ws_newline
+				expect Token::Type::LBrack
+				try_op.ensure_block=parse_block
+				expect Token::Type::RBrack
+			end
+			try_op
 		end
 
 		def parse_logic_or

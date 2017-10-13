@@ -130,10 +130,12 @@ module Valkyrie
 					parse_require
 				when Token::Type::Return,Token::Type::Break,Token::Type::Next,Token::Type::Yield
 					parse_control
-				when Token::Type::If,Token::Type::Else
+				when Token::Type::If
 					parse_conditional
 				when Token::Type::For,Token::Type::ForEach,Token::Type::While
 					parse_loop
+				when Token::Type::Try
+					parse_ex_handle
 				else
 					parse_logic_or
 			end

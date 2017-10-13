@@ -125,6 +125,12 @@ module Valkyrie
 					set_type(Comma)
 				when '.'
 					set_type(Dot)
+					if target_char=='.'
+						set_type(ElipsesIv)
+						if target_char=='.'
+							set_type(Elipses)
+						end
+					end
 				when '&'
 					def_has_op('&',Amp,And)
 				when '|'

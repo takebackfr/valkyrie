@@ -43,21 +43,26 @@ module Valkyrie
 			end
 
 			loop do
-				vector.items<<parse_expr
+				item=parse_expr
 				skip_ws_newline
+
+				if accept Token::Type::Elipses
+					skip_ws_newline
+					r_end=parse_expr
+					vector.items<<RangeLiteral.new(item,r_end).at(item.loc).at_end r_end.end_loc
+				elsif accept Token::Type::ElipsesIv
+					skip_ws_newline
+					r_end=parse_expr
+					vector.items<<RangeLiteral.new(item,r_end,true).at(item.loc).at_end r_end.end_loc
+				else
+					vector.items<<item
+				end
 
 				if accept Token::Type::Comma
 					skip_ws_newline
 					next
 				end
-"
-				elsif accept(Token::Type::Dot)&&accept Token::Type::Dot
-					incv=!!accept Token::Type::Dot
-					skip_ws_newline
-					r_end=parse_expr
-					vector.items<<RangeLiteral.new(item,r_end).at(item.loc).at_end r_end.end_loc
-				end
-"
+
 				if finish=accept Token::Type::RBrace
 					return vector.at_end finish.loc
 				end
