@@ -1,7 +1,7 @@
 module Valkyrie
 	class Parser < Lexer
 		macro def_lit_cases(types)
-			case (tok=read_token).type
+			case (tok=target).type
 				{% for type,init in types %}
 				when Token::Type::{{type}}
 					read_token
@@ -12,11 +12,11 @@ module Valkyrie
 					{% end %}
 				{% end %}
 				when Token::Type::LBrace
-					parse_list_literal
+					parse_vector_literal
 				when Token::Type::LBrack
 					parse_map_literal
 				else
-					raise ValueError.new "Expected literal value, got #{target.inspect}"
+					raise SyntaxError.new tok.loc,"Expected literal value, got #{target.inspect}"
 			end
 		end
 
@@ -33,32 +33,33 @@ module Valkyrie
 			})
 		end
 
-		def parse_list_literal
+		def parse_vector_literal
 			init=expect Token::Type::LBrace
-			list=VectorLiteral.new.at init.loc
+			vector=VectorLiteral.new.at init.loc
 
 			skip_ws_newline
 			if finish=accept Token::Type::RBrace
-				return list.at_end finish.loc
+				return vector.at_end finish.loc
 			end
 
 			loop do
-				item=parse_expr
+				vector.items<<parse_expr
 				skip_ws_newline
 
 				if accept Token::Type::Comma
-					list.items<<item
 					skip_ws_newline
 					next
+				end
+"
 				elsif accept(Token::Type::Dot)&&accept Token::Type::Dot
 					incv=!!accept Token::Type::Dot
 					skip_ws_newline
 					r_end=parse_expr
-					list.items<<RangeLiteral.new(item,r_end).at(item.loc).at_end r_end.end_loc
+					vector.items<<RangeLiteral.new(item,r_end).at(item.loc).at_end r_end.end_loc
 				end
-
+"
 				if finish=accept Token::Type::RBrace
-					return list.at_end finish.loc
+					return vector.at_end finish.loc
 				end
 			end
 		end
@@ -96,7 +97,7 @@ module Valkyrie
 				when Token::Type::LParen
 					parse_value_ipol
 				else
-					raise ValueError.new "#{target} is not a valid map key"
+					raise ValueError.new target.loc,"#{target} is not a valid map key"
 			end
 
 			expect Token::Type::Colon

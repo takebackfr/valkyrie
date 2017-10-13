@@ -54,7 +54,6 @@ module Valkyrie
 			skip_ws
 			if accept Token::Type::Equal
 				skip_ws_newline
-				p @target
 				value=parse_expr
 				return Assign.new(candidate,value).at(candidate.loc).at_end value.end_loc
 			elsif accept Token::Type::Match

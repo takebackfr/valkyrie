@@ -36,7 +36,7 @@ module Valkyrie
 
 		# expect token type(s)
 		def expect(*types : Token::Type) : Token?
-			accept(*types)||raise SyntaxError.new @target.loc,"Expected one of #{types.join ','}; got #{@target.type}"
+			accept(*types)||raise SyntaxError.new(@target.loc,"Expected one of #{types.join ','}; got #{@target.type}")
 		end
 
 		# expect a delimiter type
@@ -90,9 +90,9 @@ module Valkyrie
 						return Var.new(node.name).at node
 					end
 				when Literal
-					raise ValueError.new "Can't assign to literal value"
+					raise ValueError.new (node.loc||target.loc),"Can't assign to literal value"
 				else
-					raise ValueError.new "Invalid left hand side in assignment: #{node}"
+					raise ValueError.new (node.loc||target.loc),"Invalid left hand side in assignment: #{node}"
 			end
 		end
 
@@ -105,7 +105,7 @@ module Valkyrie
 					return node
 				when Call
 					if node.receiver?||!node.args.empty?
-						raise ArgumentError.new "Calls are prohibited in pattern matching"
+						raise ArgumentError.new (node.loc||target.loc),"Calls are prohibited in pattern matching"
 					else
 						push_var node.name
 						return Var.new(node.name).at node
@@ -117,6 +117,26 @@ module Valkyrie
 			end
 
 			return node
+		end
+
+		# dispatch expression parsing
+		def parse_expr
+			case target.type
+				when Token::Type::Func
+					parse_func
+				when Token::Type::Namespace
+					parse_namespace
+				when Token::Type::Require
+					parse_require
+				when Token::Type::Return,Token::Type::Break,Token::Type::Next,Token::Type::Yield
+					parse_control
+				when Token::Type::If,Token::Type::Else
+					parse_conditional
+				when Token::Type::For,Token::Type::ForEach,Token::Type::While
+					parse_loop
+				else
+					parse_logic_or
+			end
 		end
 
 		# main parse method

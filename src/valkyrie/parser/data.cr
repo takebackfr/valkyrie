@@ -18,26 +18,6 @@ module Valkyrie
 			block||NoOp.new
 		end
 
-		# dispatch expression parsing
-		def parse_expr
-			case target.type
-				when Token::Type::Func
-					parse_func
-				when Token::Type::Namespace
-					parse_namespace
-				when Token::Type::Require
-					parse_require
-				when Token::Type::Return,Token::Type::Break,Token::Type::Next,Token::Type::Yield
-					parse_control
-				when Token::Type::If,Token::Type::Else
-					parse_conditional
-				when Token::Type::For,Token::Type::While
-					parse_loop
-				else
-					parse_logic_or
-			end
-		end
-
 		# parse function definition
 		def parse_func
 			init=expect Token::Type::Func
@@ -97,7 +77,7 @@ module Valkyrie
 					arg.name=name.value
 					return arg.at(init.loc).at_end name.loc
 				else
-					raise ArgumentError.new "Splat patterns are limited to one per function"
+					raise ArgumentError.new init.loc,"Splat patterns are limited to one per function"
 				end
 			elsif init=accept Token::Type::Amp
 				arg.block=true
@@ -153,7 +133,7 @@ module Valkyrie
 				elsif source=parse_map_key
 					req.sources<<Require::Source.new path: expect(Token::Type::String).value,namespace: source
 				else
-					raise ValueError.new "Cannot use #{target.inspect} (type #{target.type}) in require"
+					raise ValueError.new target.loc,"Cannot use #{target.inspect} in require"
 				end
 				skip_ws_newline
 				break unless accept Token::Type::Comma
