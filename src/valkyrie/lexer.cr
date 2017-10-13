@@ -147,9 +147,19 @@ module Valkyrie
 				when '!'
 					def_equality(Not)
 				when '<'
-					def_equality(Less)
+					set_type(Less)
+					if target_char=='='
+						set_type(LessEqual)
+					elsif target_char=='<'
+						set_type(LShift)
+					end
 				when '>'
-					def_equality(Greater)
+					set_type(Greater)
+					if target_char=='='
+						set_type(GreaterEqual)
+					elsif target_char=='<'
+						set_type(RShift)
+					end
 				when '+'
 					def_has_op('+',Plus)
 				when '-'

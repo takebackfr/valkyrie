@@ -175,13 +175,29 @@ module Valkyrie
 		end
 
 		def parse_logic_and
-			left=parse_equality
+			left=parse_shift
 			skip_ws
 
 			if accept Token::Type::AndAnd
 				skip_ws_newline
 				right=parse_logic_and
 				return LogicalAnd.new(left,right).at(left).at_end right
+			end
+			left
+		end
+
+		def parse_shift
+			left=parse_equality
+			skip_ws
+
+			if accept Token::Type::LShift
+				skip_ws
+				right=parse_shift
+				return LShift.new(left,right).at(left).at_end right
+			elsif accept Token::Type::RShift
+				skip_ws
+				right=parse_shift
+				return RShift.new(left,right).at(left).at_end right
 			end
 			left
 		end

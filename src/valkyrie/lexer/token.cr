@@ -93,6 +93,8 @@ module Valkyrie
 			AndAndOp	# &&=
 			OrOr		# ||
 			OrOrOp		# ||=
+			LShift		# <<
+			RShift		# >>
 
 			LParen		# (
 			RParen		# )

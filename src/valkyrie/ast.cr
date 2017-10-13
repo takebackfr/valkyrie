@@ -357,6 +357,16 @@ module Valkyrie
 		def_equals_and_hash
 	end
 
+	# <<
+	class LShift < BinaryOp
+		def_equals_and_hash
+	end
+
+	# >>
+	class RShift < BinaryOp
+		def_equals_and_hash
+	end
+
 	abstract class UnaryOp < Node
 		def initialize(@value);end
 
