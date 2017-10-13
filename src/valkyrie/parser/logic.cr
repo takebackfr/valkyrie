@@ -118,38 +118,47 @@ module Valkyrie
 			expect Token::Type::RBrack
 
 			skip_ws_newline
-			r_init=expect Token::Type::Rescue
-			rescue_op=Rescue.new.at r_init.loc
+			loop do
+				unless r_init=accept Token::Type::Rescue
+					unless try_op.rescues.size
+						raise SyntaxError.new (try_op.body.end_loc||target.loc),"Expected one or more rescue blocks"
+					end
+					break
+				end
+				rescue_op=Rescue.new.at r_init.loc
 
-			skip_ws
-			if var=accept Token::Type::Ident
 				skip_ws
-				rescue_op.name=var.value
-				if accept Token::Type::Colon
+				if var=accept Token::Type::Ident
 					skip_ws
-					want_type=true
+					rescue_op.name=var.value
+					if accept Token::Type::Colon
+						skip_ws
+						want_type=true
+					end
+				end
+
+				if const=accept Token::Type::Const
+					rescue_op.ex=parse_primary
+				elsif want_type
+					raise SyntaxError.new target.loc,"Expected type restriction"
+				end
+
+				skip_ws_newline
+				expect Token::Type::LBrack
+				rescue_op.body=parse_block
+				expect Token::Type::RBrack
+				try_op.rescues<<rescue_op
+
+				skip_ws_newline
+				if accept Token::Type::Ensure
+					skip_ws_newline
+					expect Token::Type::LBrack
+					try_op.ensure_block=parse_block
+					expect Token::Type::RBrack
+					break
 				end
 			end
 
-			if const=accept Token::Type::Const
-				rescue_op.ex=parse_primary
-			elsif want_type
-				raise SyntaxError.new target.loc,"Expected type restriction"
-			end
-
-			skip_ws_newline
-			expect Token::Type::LBrack
-			rescue_op.body=parse_block
-			expect Token::Type::RBrack
-			try_op.rescue_block=rescue_op
-
-			skip_ws_newline
-			if accept Token::Type::Ensure
-				skip_ws_newline
-				expect Token::Type::LBrack
-				try_op.ensure_block=parse_block
-				expect Token::Type::RBrack
-			end
 			try_op
 		end
 

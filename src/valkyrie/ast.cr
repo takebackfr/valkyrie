@@ -276,11 +276,12 @@ module Valkyrie
 	# try { body } rescue [ex : Type] { body } ensure { body }
 	class Try < Node
 		property ensure_block : Node?
+		property rescues : Array(Node)
 
-		def initialize(@body=NoOp.new,@rescue_block=NoOp.new,@ensure_block=nil);end
+		def initialize(@body=NoOp.new,@rescues=[] of Node,@ensure_block=nil);end
 
-		def_nodes body,rescue_block
-		def_equals_and_hash body,rescue_block,ensure_block
+		def_nodes body
+		def_equals_and_hash body,rescues,ensure_block
 	end
 
 	class Rescue < Node
