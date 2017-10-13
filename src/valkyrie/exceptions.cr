@@ -1,17 +1,20 @@
 require "./lexer/token"
 
 module Valkyrie
-	class SyntaxError < Exception
+	class BaseException < Exception
 		property loc : Location
 
-		def initialize(@loc,msg : String="")
-			@messge="Syntax error: #{msg} at #{@loc}"
+		def initialize(@loc,@message="")
+			@message="#{@message} at #{@loc}"
 		end
 	end
 
-	class ArgumentError < Exception
+	class SyntaxError < BaseException
 	end
 
-	class ValueError < Exception
+	class ArgumentError < BaseException
+	end
+
+	class ValueError < BaseException
 	end
 end
