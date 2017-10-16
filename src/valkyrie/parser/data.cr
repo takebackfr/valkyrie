@@ -158,7 +158,7 @@ module Valkyrie
 		def parse_namespace
 			init=expect Token::Type::Namespace
 			skip_ws
-			ns=Namespace.new(expect(Token::Type::Const).value).at init.loc
+			ns=Namespace.new(expect(Token::Type::Const,Token::Type::Ident).value).at init.loc
 			skip_ws_newline
 			expect Token::Type::LBrack
 			skip_ws_newline
