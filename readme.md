@@ -190,10 +190,10 @@ fn test : Null{
 test() // null
 
 // unnamed arg
-fn sqare(n){
+fn square(n){
 	n * n
 }
-sqaure(4) // 16
+square(4) // 16
 
 // argument default
 fn square(n = 0){
