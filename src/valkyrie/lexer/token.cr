@@ -8,7 +8,7 @@ module Valkyrie
 		def initialize(@file=nil,@line=0,@col=0,@length=0);end
 
 		def to_s
-			"#{@file||"buffer"}:#{@line}:#{@col}"
+			"#{@file || "buffer"}:#{@line}:#{@col}"
 		end
 
 		def to_s(io : IO)
@@ -89,9 +89,9 @@ module Valkyrie
 			PipeOp		# |=
 			Xor			# ^
 			XorOp		# ^=
-			AndAnd		# &&
+			AndAnd		#  && 
 			AndAndOp	# &&=
-			OrOr		# ||
+			OrOr		#  || 
 			OrOrOp		# ||=
 			LShift		# <<
 			RShift		# >>
@@ -175,7 +175,7 @@ module Valkyrie
 			end
 
 			def operator?
-				unary_op?||binary_op?
+				unary_op? || binary_op?
 			end
 		end
 
@@ -187,7 +187,7 @@ module Valkyrie
 		def initialize(@type=Type::Unknown,@value=nil,@raw="",@loc=Location.new);end
 
 		def value
-			@value||raw
+			@value || raw
 		end
 
 		def to_s

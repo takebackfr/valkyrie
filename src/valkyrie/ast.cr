@@ -79,11 +79,11 @@ module Valkyrie
 		end
 
 		def loc
-			@loc||@children.first?.try &.loc
+			@loc || @children.first?.try &.loc
 		end
 
 		def end_loc
-			@end_loc||@children.last?.try &.end_loc
+			@end_loc || @children.last?.try &.end_loc
 		end
 
 		def_equals_and_hash children
@@ -347,12 +347,12 @@ module Valkyrie
 		def_equals_and_hash
 	end
 
-	# ||
+	#  || 
 	class LogicalOr < BinaryOp
 		def_equals_and_hash
 	end
 
-	# &&
+	#  && 
 	class LogicalAnd < BinaryOp
 		def_equals_and_hash
 	end

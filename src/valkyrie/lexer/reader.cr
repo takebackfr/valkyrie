@@ -22,7 +22,7 @@ module Valkyrie
 		end
 
 		def peek_char : Char
-			if (slice=@source.peek)&&!slice.empty?
+			if (slice=@source.peek) && !slice.empty?
 				slice[0].chr
 			else
 				'\0'

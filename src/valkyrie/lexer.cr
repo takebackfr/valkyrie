@@ -19,7 +19,7 @@ module Valkyrie
 		# @source -- source file name
 		def initialize(data : IO,@source=nil,wd : String?=nil)
 			@reader=Reader.new data
-			@wd=wd||(@source ? File.dirname(source||"") : %x(pwd))
+			@wd=wd || (@source ? File.dirname(source || "") : %x(pwd))
 
 			@line=1
 			@col=0
@@ -254,7 +254,7 @@ module Valkyrie
 			loop do
 				case target_char
 					when '.'
-						if !is_fp&&peek_char.ascii_number?
+						if !is_fp && peek_char.ascii_number?
 							read_char
 							is_fp=true
 						else
@@ -333,7 +333,7 @@ module Valkyrie
 					consume_ident
 			end
 
-			if force_sym||@target.value.size>1
+			if force_sym || @target.value.size>1
 				@target.type=Token::Type::Symbol
 				@target.value=@target.value[1..-1]
 			else
@@ -344,7 +344,7 @@ module Valkyrie
 		def consume_comment(multi=false)
 			if multi
 				last_char=read_char
-				until last_char=='*'&&(last_char=read_char)=='/';end
+				until last_char=='*' && (last_char=read_char)=='/';end
 			else
 				until ['\n','\0'].includes? read_char;end
 			end
@@ -352,7 +352,7 @@ module Valkyrie
 
 		def consume_ws
 			@target.type=Token::Type::WhiteSpace
-			while(c=read_char).ascii_whitespace?&&'\n'!=c;end
+			while(c=read_char).ascii_whitespace? && '\n'!=c;end
 		end
 
 		def consume_const
@@ -364,7 +364,7 @@ module Valkyrie
 			@target.type=Token::Type::Const
 
 			loop do
-				if target_char.ascii_alphanumeric?||target_char=='_'
+				if target_char.ascii_alphanumeric? || target_char=='_'
 					read_char
 				else
 					break
@@ -374,12 +374,12 @@ module Valkyrie
 		end
 
 		def consume_ident
-			unless target_char.ascii_letter?||target_char=='_'
+			unless target_char.ascii_letter? || target_char=='_'
 				raise SyntaxError.new location,"Unexpected #{target_char} for Ident. Buffer: `#{@reader.buff_value}`"
 			end
 
 			loop do
-				if target_char.ascii_alphanumeric?||target_char=='_'
+				if target_char.ascii_alphanumeric? || target_char=='_'
 					read_char
 				else
 					break

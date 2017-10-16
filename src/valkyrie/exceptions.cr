@@ -2,10 +2,10 @@ require "./lexer/token"
 
 module Valkyrie
 	class BaseException < Exception
-		property loc : Location
+		property loc : Location?
 
-		def initialize(@loc,@message="")
-			@message="#{@message} at #{@loc}"
+		def initialize(@loc=nil,@message="")
+			@message="#{@message} at #{@loc}" if @loc
 		end
 	end
 
@@ -16,5 +16,8 @@ module Valkyrie
 	end
 
 	class ValueError < BaseException
+	end
+
+	class TypeError < BaseException
 	end
 end

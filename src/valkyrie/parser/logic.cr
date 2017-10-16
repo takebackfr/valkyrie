@@ -121,7 +121,7 @@ module Valkyrie
 			loop do
 				unless r_init=accept Token::Type::Rescue
 					unless try_op.rescues.size
-						raise SyntaxError.new (try_op.body.end_loc||target.loc),"Expected one or more rescue blocks"
+						raise SyntaxError.new (try_op.body.end_loc || target.loc),"Expected one or more rescue blocks"
 					end
 					break
 				end

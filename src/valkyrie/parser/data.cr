@@ -15,7 +15,7 @@ module Valkyrie
 				skip_ws_newline
 			end
 
-			block||NoOp.new
+			block || NoOp.new
 		end
 
 		# parse function definition
